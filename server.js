@@ -16,13 +16,6 @@ connectDB();
 
 const app = express();
 
-app.use(
-  cors({
-    origin: "http://localhost:5173",
-    credentials: true,
-  })
-);
-
 app.use(express.json());
 
 app.use("/api/materials", materialRoutes);
@@ -40,7 +33,7 @@ app.use("/api/inbound-log", inboundRoutes);
 app.use("/api/orders", orderRoutes);
 
 const allowedOrigins = [
-  "http://localhost:5000",
+  "http://localhost:5173",
   "https://tartland-inventory-system.vercel.app",
   "https://tartland-inventory-system-git-main-adriantech-beeps-projects.vercel.app",
   "https://tartland-inventory-system-j13gki3x8-adriantech-beeps-projects.vercel.app",
@@ -52,6 +45,7 @@ app.use(
       if (!origin || allowedOrigins.includes(origin)) {
         callback(null, true);
       } else {
+        console.log("Blocked by CORS: ", origin);
         callback(new Error("Not allowed by CORS"));
       }
     },
