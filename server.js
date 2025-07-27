@@ -40,7 +40,7 @@ app.use("/api/inbound-log", inboundRoutes);
 app.use("/api/orders", orderRoutes);
 
 const allowedOrigins = [
-  "http://localhost:5173",
+  "http://localhost:5000",
   "https://tartland-inventory-system.vercel.app",
   "https://tartland-inventory-system-git-main-adriantech-beeps-projects.vercel.app",
   "https://tartland-inventory-system-j13gki3x8-adriantech-beeps-projects.vercel.app",
