@@ -39,10 +39,23 @@ app.use("/api/inbound-log", inboundRoutes);
 
 app.use("/api/orders", orderRoutes);
 
+import cors from "cors";
+
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://tartland-inventory-system.vercel.app",
+  "https://tartland-inventory-system-git-main-adriantech-beeps-projects.vercel.app",
+  "https://tartland-inventory-system-j13gki3x8-adriantech-beeps-projects.vercel.app",
+];
+
 app.use(
   cors({
-    origin:
-      "https://tartland-inventory-system-az7to49hu-adriantech-beeps-projects.vercel.app",
+    origin: function (origin, callback) {
+      // allow requests with no origin (like mobile apps, curl, etc.)
+      if (!origin) return callback(null, true);
+      if (allowedOrigins.includes(origin)) return callback(null, true);
+      return callback(new Error("Not allowed by CORS"));
+    },
     credentials: true,
   })
 );
