@@ -16,22 +16,6 @@ connectDB();
 
 const app = express();
 
-app.use(express.json());
-
-app.use("/api/materials", materialRoutes);
-
-app.use("/api/mixture-rules", mixtureRuleRoutes);
-
-app.use("/api/inventory", inventoryRoutes);
-
-app.use("/api/production-log", productionLogRoutes);
-
-app.use("/api/inventory-produced", producedInventoryRoutes);
-
-app.use("/api/inbound-log", inboundRoutes);
-
-app.use("/api/orders", orderRoutes);
-
 const allowedOrigins = [
   "http://localhost:5173",
   "https://tartland-inventory-system.vercel.app",
@@ -52,6 +36,22 @@ app.use(
     credentials: true,
   })
 );
+
+app.use(express.json());
+
+app.use("/api/materials", materialRoutes);
+
+app.use("/api/mixture-rules", mixtureRuleRoutes);
+
+app.use("/api/inventory", inventoryRoutes);
+
+app.use("/api/production-log", productionLogRoutes);
+
+app.use("/api/inventory-produced", producedInventoryRoutes);
+
+app.use("/api/inbound-log", inboundRoutes);
+
+app.use("/api/orders", orderRoutes);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
