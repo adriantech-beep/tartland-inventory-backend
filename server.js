@@ -41,7 +41,8 @@ app.use("/api/orders", orderRoutes);
 
 app.use(
   cors({
-    origin: "https://tartland-inventory-system.vercel.app/", // or "*" for dev
+    origin: ["https://tartland-inventory-system.vercel.app"],
+    credentials: true,
   })
 );
 
