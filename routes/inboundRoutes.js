@@ -1,5 +1,3 @@
-// routes/inboundRoutes.js
-
 import express from "express";
 import {
   addInboundLog,

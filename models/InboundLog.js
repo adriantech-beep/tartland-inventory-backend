@@ -1,5 +1,3 @@
-// models/InboundLog.js
-
 import mongoose from "mongoose";
 
 const inboundLogSchema = new mongoose.Schema(
