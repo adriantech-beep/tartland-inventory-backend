@@ -41,7 +41,8 @@ app.use("/api/orders", orderRoutes);
 
 app.use(
   cors({
-    origin: ["https://tartland-inventory-system.vercel.app"],
+    origin:
+      "https://tartland-inventory-system-az7to49hu-adriantech-beeps-projects.vercel.app",
     credentials: true,
   })
 );
