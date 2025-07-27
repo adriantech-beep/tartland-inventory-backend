@@ -39,8 +39,6 @@ app.use("/api/inbound-log", inboundRoutes);
 
 app.use("/api/orders", orderRoutes);
 
-import cors from "cors";
-
 const allowedOrigins = [
   "http://localhost:5173",
   "https://tartland-inventory-system.vercel.app",
