@@ -1,24 +1,15 @@
 import ProductionLog from "../models/ProductionLog.js";
 
 import Inventory from "../models/Inventory.js";
+import Stock from "../models/Stock.js";
 
 export const createProductionLog = async (req, res, next) => {
   const { flavor, mixtureCount, totalJars, totalBundles, materialsUsed } =
     req.body;
 
   try {
-    // 🛡️ 1. Check if all required materials are available in inventory
     for (const mat of materialsUsed) {
       if (!mat.id) continue;
-
-      // const existing = await Inventory.findOne({
-      //   "rawMaterial.id": req.body.rawMaterial.id,
-      // });
-      // if (existing) {
-      //   return res
-      //     .status(409)
-      //     .json({ message: "Material already exists in inventory." });
-      // }
 
       const inventoryItem = await Inventory.findOne({
         "rawMaterial.id": mat.id,
@@ -32,10 +23,8 @@ export const createProductionLog = async (req, res, next) => {
 
       const currentUnits = inventoryItem.totalUnits;
 
-      // 🧠 Decide how much we're deducting
       const requiredUnits = mat.type === "jar" ? mat.jarsUsed : mat.bagsUsed;
 
-      // ⛔ Guard Clause: Not enough stock
       if (currentUnits < requiredUnits) {
         return res.status(422).json({
           message: `Insufficient stock for ${mat.name}. Required: ${requiredUnits}, Available: ${currentUnits}`,
@@ -43,7 +32,6 @@ export const createProductionLog = async (req, res, next) => {
       }
     }
 
-    // ✅ 2. Save the production log
     const newProductionLog = new ProductionLog({
       flavor,
       mixtureCount,
@@ -54,7 +42,6 @@ export const createProductionLog = async (req, res, next) => {
 
     await newProductionLog.save();
 
-    // 🔄 3. Deduct inventory
     for (const mat of materialsUsed) {
       if (!mat.id) continue;
 
@@ -80,6 +67,12 @@ export const createProductionLog = async (req, res, next) => {
         }
       );
     }
+
+    await Stock.findOneAndUpdate(
+      { flavor },
+      { $inc: { availableBundles: totalBundles } },
+      { upsert: true, new: true }
+    );
     res.status(201).json(newProductionLog);
   } catch (err) {
     console.error(err);
@@ -109,7 +102,6 @@ export const deleteProductionLog = async (req, res, next) => {
       return res.status(404).json({ message: "Production log not found." });
     }
 
-    // Restore the inventory
     for (const mat of production.materialsUsed) {
       if (!mat.id) continue;
 
@@ -122,7 +114,7 @@ export const deleteProductionLog = async (req, res, next) => {
       const unitsToRestore =
         typeof mat.jarsUsed === "number" ? mat.jarsUsed : mat.bagsUsed;
 
-      if (typeof unitsToRestore !== "number") continue; // Skip if no usable info
+      if (typeof unitsToRestore !== "number") continue;
 
       const newTotalUnits = inventoryItem.totalUnits + unitsToRestore;
       const newBoxCount = mat.perBox
@@ -140,7 +132,6 @@ export const deleteProductionLog = async (req, res, next) => {
       );
     }
 
-    // Delete the production
     await ProductionLog.findByIdAndDelete(req.params.id);
 
     res
@@ -153,7 +144,7 @@ export const deleteProductionLog = async (req, res, next) => {
 };
 
 export const editProductionLog = async (req, res) => {
-  const { id } = req.params; // production log ID
+  const { id } = req.params;
   const {
     flavor,
     mixtureCount,
@@ -163,13 +154,11 @@ export const editProductionLog = async (req, res) => {
   } = req.body;
 
   try {
-    // 1. Fetch existing production log
     const existingLog = await ProductionLog.findById(id);
     if (!existingLog) {
       return res.status(404).json({ message: "Production log not found" });
     }
 
-    // 2. Revert old inventory deductions
     for (const mat of existingLog.materialsUsed) {
       if (!mat.id) continue;
 
@@ -186,7 +175,6 @@ export const editProductionLog = async (req, res) => {
       await inventoryItem.save();
     }
 
-    // 3. Validate new inventory availability
     for (const mat of newMaterialsUsed) {
       if (!mat.id) continue;
 
@@ -207,7 +195,6 @@ export const editProductionLog = async (req, res) => {
       }
     }
 
-    // 4. Update production log
     existingLog.flavor = flavor;
     existingLog.mixtureCount = mixtureCount;
     existingLog.totalJars = totalJars;
@@ -215,7 +202,6 @@ export const editProductionLog = async (req, res) => {
     existingLog.materialsUsed = newMaterialsUsed;
     await existingLog.save();
 
-    // 5. Deduct inventory based on new materials
     for (const mat of newMaterialsUsed) {
       if (!mat.id) continue;
 

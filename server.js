@@ -10,6 +10,7 @@ import productionLogRoutes from "./routes/productionLogRoutes.js";
 import producedInventoryRoutes from "./routes/producedInventoryRoutes.js";
 import inboundRoutes from "./routes/inboundRoutes.js";
 import orderRoutes from "./routes/orderRoutes.js";
+import availableStockRoutes from "./routes/availableStockRoutes.js";
 
 dotenv.config();
 connectDB();
@@ -52,6 +53,8 @@ app.use("/api/inventory-produced", producedInventoryRoutes);
 app.use("/api/inbound-log", inboundRoutes);
 
 app.use("/api/orders", orderRoutes);
+
+app.use("/api/available-stock", availableStockRoutes);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
