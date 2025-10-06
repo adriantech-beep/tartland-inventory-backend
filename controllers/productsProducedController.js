@@ -21,7 +21,7 @@ export const getProductsProduced = async (req, res) => {
         },
       },
       {
-        $sort: { flavor: 1 }, // Optional: sort alphabetically
+        $sort: { flavor: 1 }, 
       },
     ]);
 

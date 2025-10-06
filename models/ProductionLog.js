@@ -19,12 +19,12 @@ const productionSchema = new mongoose.Schema(
         bagsUsed: { type: Number },
         gramsUsed: { type: Number },
 
-        jarsUsed: { type: Number }, // only for jar material
+        jarsUsed: { type: Number },
 
-        fullBoxesUsed: { type: Number }, // for both flakes/choco and jars
-        leftoverBags: { type: Number }, // for flakes/choco only
-        leftoverBoxFraction: { type: Number }, // only for jar material
-        leftoverJars: { type: Number }, // only for jar material
+        fullBoxesUsed: { type: Number },
+        leftoverBags: { type: Number },
+        leftoverBoxFraction: { type: Number },
+        leftoverJars: { type: Number },
       },
     ],
   },

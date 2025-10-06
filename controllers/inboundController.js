@@ -51,8 +51,7 @@ export const getInboundLog = async (req, res, next) => {
     );
     res.status(200).json({ inboundLog: formatted });
   } catch (err) {
-    const error = new HttpError("Fetching raw materials failed", 500);
-    return next(error);
+    return res.status(500).json({ message: "Fetching raw materials failed" });
   }
 };
 
@@ -87,4 +86,11 @@ export const deleteInboundLog = async (req, res) => {
   } catch (error) {
     res.status(500).json({ message: "Error deleting inbound log", error });
   }
+};
+
+export const updateInboundLog = async (req, res) => {
+  const updated = await InboundLog.findByIdAndUpdate(req.params.id, req.body, {
+    new: true,
+  });
+  res.json(updated);
 };
