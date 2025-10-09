@@ -14,24 +14,26 @@ export const getMaterials = async (req, res, next) => {
   }
 };
 
-export const createMaterial = async (req, res, next) => {
+export const createMaterial = async (req, res) => {
   const errors = validationResult(req);
 
   if (!errors.isEmpty()) {
-    return next(
-      new HttpError("Invalid inputs passed, please check your data", 422)
-    );
+    return res
+      .status(422)
+      .json({ message: "Invalid inputs passed, please check your data" });
   }
+
   const { name, perBox, perGrams, rawMaterialCategory, unit } = req.body;
+
   try {
     const existingMaterial = await Material.findOne({ name });
     if (existingMaterial) {
-      return next(
-        new HttpError(
-          "Material name already exists. Please choose a different name.",
-          422
-        )
-      );
+      return res
+        .status(422)
+        .json({
+          message:
+            "Material name already exists. Please choose a different name.",
+        });
     }
 
     const newMaterial = new Material({
@@ -39,14 +41,17 @@ export const createMaterial = async (req, res, next) => {
       perBox,
       perGrams,
       rawMaterialCategory,
-      unit,
+      unit: unit || "box",
     });
 
-    await newMaterial.save();
-    res.status(201).json(newMaterial);
-  } catch (err) {
-    console.error(err);
-    return next(new HttpError("Creating product failed.", 500));
+    const savedMaterial = await newMaterial.save();
+    res.status(201).json({
+      message: "Material created successfully",
+      material: savedMaterial,
+    });
+  } catch (error) {
+    console.error("Error creating material:", error);
+    res.status(500).json({ message: "Server error while creating material" });
   }
 };
 

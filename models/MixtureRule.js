@@ -24,10 +24,12 @@ const mixtureRuleSchema = new mongoose.Schema(
       },
     ],
     jarMaterial: {
-      id: { type: mongoose.Types.ObjectId, required: true },
-      name: { type: String, required: true },
-      perGrams: { type: Number, required: true },
-      perBox: { type: Number, required: true },
+      material: {
+        id: { type: mongoose.Types.ObjectId, required: true },
+        name: { type: String, required: true },
+        perGrams: { type: Number, required: true },
+        perBox: { type: Number, required: true },
+      },
     },
   },
   { timestamps: true }

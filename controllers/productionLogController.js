@@ -23,7 +23,7 @@ export const createProductionLog = async (req, res, next) => {
 
       const currentUnits = inventoryItem.totalUnits;
 
-      const requiredUnits = mat.type === "jar" ? mat.jarsUsed : mat.bagsUsed;
+      const requiredUnits = mat.name === "jar" ? mat.jarsUsed : mat.bagsUsed;
 
       if (currentUnits < requiredUnits) {
         return res.status(422).json({
@@ -52,7 +52,7 @@ export const createProductionLog = async (req, res, next) => {
       const bagsPerBox = mat.perBox;
       let remainingUnits = inventoryItem.totalUnits;
 
-      const used = mat.type === "jar" ? mat.jarsUsed : mat.bagsUsed;
+      const used = mat.name === "jar" ? mat.jarsUsed : mat.bagsUsed;
       remainingUnits -= used;
 
       const updatedBoxCount = Math.floor(remainingUnits / bagsPerBox);
