@@ -1,4 +1,3 @@
-// server.js or index.js
 import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
@@ -11,6 +10,7 @@ import producedInventoryRoutes from "./routes/producedInventoryRoutes.js";
 import inboundRoutes from "./routes/inboundRoutes.js";
 import orderRoutes from "./routes/orderRoutes.js";
 import availableStockRoutes from "./routes/availableStockRoutes.js";
+import authGoogleRoutes from "./routes/authGoogleRoutes.js";
 
 dotenv.config();
 connectDB();
@@ -19,6 +19,7 @@ const app = express();
 
 const allowedOrigins = [
   "http://localhost:5173",
+  "http://localhost:5174",
   "https://tartland-inventory-system.vercel.app",
   "https://tartland-inventory-system-git-main-adriantech-beeps-projects.vercel.app",
   "https://tartland-inventory-system-j13gki3x8-adriantech-beeps-projects.vercel.app",
@@ -39,6 +40,8 @@ app.use(
 );
 
 app.use(express.json());
+
+app.use("/api/auth", authGoogleRoutes);
 
 app.use("/api/materials", materialRoutes);
 
