@@ -16,6 +16,7 @@ import availableStockRoutes from "./routes/availableStockRoutes.js";
 import authGoogleRoutes from "./routes/authGoogleRoutes.js";
 import authUserRoutes from "./routes/authUserRoutes.js";
 import activeUserRoutes from "./routes/activeUserRoutes.js";
+import companyProfileRoutes from "./routes/companyProfileRoutes.js";
 
 const app = express();
 connectDB();
@@ -73,6 +74,8 @@ app.use("/api/orders", orderRoutes);
 app.use("/api/available-stock", availableStockRoutes);
 
 app.use("/api/user", activeUserRoutes);
+
+app.use("/api/company", companyProfileRoutes);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

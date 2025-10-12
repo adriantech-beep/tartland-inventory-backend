@@ -9,8 +9,7 @@ export const getMaterials = async (req, res, next) => {
     const formatted = materials.map((prod) => prod.toObject({ getters: true }));
     res.status(200).json({ materials: formatted });
   } catch (err) {
-    const error = new HttpError("Fetching raw materials failed", 500);
-    return next(error);
+    return res.status(500).json({ message: "Fetching raw materials failed" });
   }
 };
 
@@ -28,12 +27,10 @@ export const createMaterial = async (req, res) => {
   try {
     const existingMaterial = await Material.findOne({ name });
     if (existingMaterial) {
-      return res
-        .status(422)
-        .json({
-          message:
-            "Material name already exists. Please choose a different name.",
-        });
+      return res.status(422).json({
+        message:
+          "Material name already exists. Please choose a different name.",
+      });
     }
 
     const newMaterial = new Material({
