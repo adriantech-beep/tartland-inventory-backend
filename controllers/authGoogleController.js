@@ -1,6 +1,4 @@
-import express from "express";
 import { OAuth2Client } from "google-auth-library";
-
 import { generateToken } from "../utils/jwt.js";
 import User from "../models/User.js";
 

@@ -1,5 +1,8 @@
-import express from "express";
 import dotenv from "dotenv";
+dotenv.config();
+import helmet from "helmet";
+
+import express from "express";
 import cors from "cors";
 import connectDB from "./config/db.js";
 import materialRoutes from "./routes/materialRoutes.js";
@@ -11,11 +14,18 @@ import inboundRoutes from "./routes/inboundRoutes.js";
 import orderRoutes from "./routes/orderRoutes.js";
 import availableStockRoutes from "./routes/availableStockRoutes.js";
 import authGoogleRoutes from "./routes/authGoogleRoutes.js";
-
-dotenv.config();
-connectDB();
+import authUserRoutes from "./routes/authUserRoutes.js";
+import activeUserRoutes from "./routes/activeUserRoutes.js";
 
 const app = express();
+connectDB();
+
+app.use(
+  helmet({
+    crossOriginOpenerPolicy: false,
+    crossOriginEmbedderPolicy: false,
+  })
+);
 
 const allowedOrigins = [
   "http://localhost:5000",
@@ -44,6 +54,8 @@ app.use(express.json());
 
 app.use("/api/auth", authGoogleRoutes);
 
+app.use("/api/auth", authUserRoutes);
+
 app.use("/api/materials", materialRoutes);
 
 app.use("/api/mixture-rules", mixtureRuleRoutes);
@@ -59,6 +71,8 @@ app.use("/api/inbound-log", inboundRoutes);
 app.use("/api/orders", orderRoutes);
 
 app.use("/api/available-stock", availableStockRoutes);
+
+app.use("/api/user", activeUserRoutes);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
