@@ -39,7 +39,7 @@ export const createCompanyProfile = async (req, res) => {
   }
 };
 
-export const getCompanySettings = async (req, res, next) => {
+export const getCompanyProfile = async (req, res, next) => {
   try {
     const companySettings = await Company.findOne();
 
@@ -53,5 +53,40 @@ export const getCompanySettings = async (req, res, next) => {
   } catch (err) {
     console.error(err);
     return next(new HttpError("Fetching company settings failed", 500));
+  }
+};
+
+export const editCompanyProfile = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { companyName } = req.body;
+
+    const companySettings = await Company.findById(id);
+    if (!companySettings) {
+      return res.status(404).json({ message: "Company profile not found" });
+    }
+
+    if (req.file) {
+      const result = await uploadToCloudinary(
+        req.file.buffer,
+        req.file.originalname,
+        "tartland/company/avatar"
+      );
+      companySettings.avatar = result.secure_url;
+    }
+
+    if (companyName) {
+      companySettings.companyName = companyName;
+    }
+
+    await companySettings.save();
+
+    return res.status(200).json({
+      message: "Company profile updated successfully",
+      companySettings,
+    });
+  } catch (error) {
+    console.error("Updating company profile error:", error);
+    return res.status(500).json({ message: "Server error" });
   }
 };

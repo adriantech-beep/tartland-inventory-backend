@@ -1,7 +1,8 @@
 import express from "express";
 import {
   createCompanyProfile,
-  getCompanySettings,
+  editCompanyProfile,
+  getCompanyProfile,
 } from "../controllers/companySettingsController.js";
 import { upload } from "../uploads/upload.js";
 
@@ -12,6 +13,11 @@ router.post(
   upload.single("avatar"),
   createCompanyProfile
 );
-router.get("/get-company-profile", getCompanySettings);
+router.get("/get-company-profile", getCompanyProfile);
+router.put(
+  "/edit-company-profile/:id",
+  upload.single("avatar"),
+  editCompanyProfile
+);
 
 export default router;
